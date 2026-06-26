@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  sentinel-ai:
+    build: .
+    container_name: sentinel-ai-service
+    ports:
+      - "8000:8000"
+    environment:
+      - DECRYPTION_PASSWORD=${DECRYPTION_PASSWORD:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - ./.env.enc:/app/.env.enc:ro
+    restart: unless-stopped

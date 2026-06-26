@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard AI | Enterprise Threat Intelligence Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Top Navbar -->
+        <header class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved logo-icon"></i>
+                <span class="logo-text">CYBERGUARD <span class="accent-text">AI</span></span>
+            </div>
+            <div class="status-indicator">
+                <span class="pulse-dot"></span>
+                <span class="status-label">COPS CENTER ACTIVE</span>
+            </div>
+        </header>
+
+        <!-- Main Layout Grid -->
+        <main class="dashboard-grid">
+            
+            <!-- Left Panel: Controls & Profiles -->
+            <section class="panel control-panel">
+                <div class="panel-header">
+                    <i class="fa-solid fa-sliders"></i>
+                    <h2>Threat Control Hub</h2>
+                </div>
+                
+                <div class="panel-body">
+                    <p class="section-desc">Select a target small business profile to initiate a vulnerability and exposure scan.</p>
+                    
+                    <div class="profile-selector-container">
+                        <label class="input-label">Active Target</label>
+                        <select id="profile-select" class="cyber-select">
+                            <!-- Populated by JavaScript -->
+                        </select>
+                    </div>
+
+                    <div id="company-preview-card" class="company-card">
+                        <h3 id="preview-name">Loading Profile...</h3>
+                        <p id="preview-desc">Connecting to target asset database...</p>
+                        <div class="target-badge">
+                            <i class="fa-solid fa-network-wired"></i>
+                            <span id="preview-host">...</span>
+                        </div>
+                        <div class="target-badge">
+                            <i class="fa-solid fa-server"></i>
+                            <span id="preview-ip">...</span>
+                        </div>
+                    </div>
+
+                    <!-- Custom Target Input Section -->
+                    <div id="custom-target-inputs" class="custom-inputs-container hidden">
+                        <div class="input-group">
+                            <label class="input-label" for="custom-name">Business / Asset Name</label>
+                            <input type="text" id="custom-name" class="cyber-input" placeholder="e.g. Titan Corp Internal">
+                        </div>
+                        <div class="input-group-row">
+                            <div class="input-group">
+                                <label class="input-label" for="custom-host">Target Domain/Host</label>
+                                <input type="text" id="custom-host" class="cyber-input" placeholder="e.g. dev.titan.com">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label" for="custom-ip">IP Address</label>
+                                <input type="text" id="custom-ip" class="cyber-input" placeholder="e.g. 192.168.1.15">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label" for="custom-desc">Asset Description</label>
+                            <textarea id="custom-desc" class="cyber-textarea" placeholder="Describe the business operations and asset function..." rows="3"></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Target Ports to Probe</label>
+                            <div class="ports-grid">
+                                <!-- Row 1: Core Web / Remote -->
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="21" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">21</span><span class="port-name">FTP</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="22" class="port-checkbox" checked>
+                                    <span class="port-tile"><span class="port-num">22</span><span class="port-name">SSH</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="23" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">23</span><span class="port-name">Telnet</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="25" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">25</span><span class="port-name">SMTP</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="80" class="port-checkbox" checked>
+                                    <span class="port-tile"><span class="port-num">80</span><span class="port-name">HTTP</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="110" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">110</span><span class="port-name">POP3</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="143" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">143</span><span class="port-name">IMAP</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="389" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">389</span><span class="port-name">LDAP</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="443" class="port-checkbox" checked>
+                                    <span class="port-tile"><span class="port-num">443</span><span class="port-name">HTTPS</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="445" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">445</span><span class="port-name">SMB</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="3306" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">3306</span><span class="port-name">MySQL</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="3389" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">3389</span><span class="port-name">RDP</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="5432" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">5432</span><span class="port-name">Postgres</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="6379" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">6379</span><span class="port-name">Redis</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="8080" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">8080</span><span class="port-name">Jenkins</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="8443" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">8443</span><span class="port-name">HTTPS-Alt</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="9200" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">9200</span><span class="port-name">Elastic</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="11211" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">11211</span><span class="port-name">Memcache</span></span>
+                                </label>
+                                <label class="port-checkbox-label">
+                                    <input type="checkbox" value="27017" class="port-checkbox">
+                                    <span class="port-tile"><span class="port-num">27017</span><span class="port-name">MongoDB</span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="scan-btn" class="cyber-btn primary-btn">
+                        <span class="btn-glow"></span>
+                        <i class="fa-solid fa-crosshairs btn-icon"></i>
+                        <span class="btn-text">INITIALIZE MULTI-AGENT SCAN</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Center Panel: Agent Orchestrator & Live Terminal -->
+            <section class="panel orchestrator-panel">
+                <div class="panel-header">
+                    <i class="fa-solid fa-microchip"></i>
+                    <h2>Agent Pipeline Visualizer</h2>
+                </div>
+                
+                <div class="panel-body orchestrator-body">
+                    <!-- Agent Pipeline Flow Visual -->
+                    <div class="agent-flow-container">
+                        <!-- Agent 1: Recon -->
+                        <div class="agent-node" id="node-recon">
+                            <div class="node-icon-wrapper">
+                                <i class="fa-solid fa-search"></i>
+                                <div class="node-spinner"></div>
+                            </div>
+                            <div class="node-info">
+                                <span class="node-title">Recon Agent</span>
+                                <span class="node-status">STANDBY</span>
+                            </div>
+                        </div>
+
+                        <div class="flow-connector" id="connector-1"></div>
+
+                        <!-- Agent 2: Vulnerability -->
+                        <div class="agent-node" id="node-vulnerability">
+                            <div class="node-icon-wrapper">
+                                <i class="fa-solid fa-bug"></i>
+                                <div class="node-spinner"></div>
+                            </div>
+                            <div class="node-info">
+                                <span class="node-title">Vuln Agent</span>
+                                <span class="node-status">STANDBY</span>
+                            </div>
+                        </div>
+
+                        <div class="flow-connector" id="connector-2"></div>
+
+                        <!-- Agent 3: Risk Analysis -->
+                        <div class="agent-node" id="node-risk">
+                            <div class="node-icon-wrapper">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <div class="node-spinner"></div>
+                            </div>
+                            <div class="node-info">
+                                <span class="node-title">Risk Agent</span>
+                                <span class="node-status">STANDBY</span>
+                            </div>
+                        </div>
+
+                        <div class="flow-connector" id="connector-3"></div>
+
+                        <!-- Agent 4: Report Generation -->
+                        <div class="agent-node" id="node-report">
+                            <div class="node-icon-wrapper">
+                                <i class="fa-solid fa-file-shield"></i>
+                                <div class="node-spinner"></div>
+                            </div>
+                            <div class="node-info">
+                                <span class="node-title">Report Agent</span>
+                                <span class="node-status">STANDBY</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Terminal Panel -->
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div class="terminal-title">AGENT CORE LOGS - SHIELD_AI_V1</div>
+                            <div class="terminal-action">
+                                <i class="fa-solid fa-terminal"></i>
+                            </div>
+                        </div>
+                        <div class="terminal-body" id="terminal-logs">
+                            <div class="log-line system-line">[SYSTEM] CyberGuard Agent shell initialized. Ready to execute pipeline.</div>
+                            <div class="log-line hint-line">[HINT] Choose a target profile on the left and click 'INITIALIZE MULTI-AGENT SCAN'.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right/Bottom Panel: Intelligence Report -->
+            <section class="panel report-panel col-span-3">
+                <div class="panel-header">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h2>Risk & Vulnerability Assessment Report</h2>
+                    <div class="report-header-actions">
+                        <button id="copy-markdown-btn" class="icon-action-btn" title="Copy Report Markdown" disabled>
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                        <button id="download-report-btn" class="icon-action-btn" title="Download Report" disabled>
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                        <button id="print-report-btn" class="icon-action-btn" title="Print Report" disabled>
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-body report-body">
+                    <!-- Default Standby State -->
+                    <div id="report-empty-state" class="empty-state">
+                        <div class="empty-icon-box">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3>Scan Required</h3>
+                        <p>No active assessment logs. Run the agent scanning pipeline to generate risk vectors and executive summaries.</p>
+                    </div>
+
+                    <!-- Active Report Dashboard -->
+                    <div id="report-active-state" class="active-report-grid hidden">
+                        
+                        <!-- Left Sub-Grid: Stat Cards & Exposed Ports -->
+                        <div class="report-overview">
+                            <div class="dashboard-stats">
+                                <div class="stat-card">
+                                    <span class="stat-label">Overall Risk Level</span>
+                                    <span class="stat-value" id="report-risk-badge">CRITICAL</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label">CVE Findings</span>
+                                    <span class="stat-value text-accent" id="report-cve-count">0</span>
+                                </div>
+                            </div>
+
+                            <div class="exposure-details">
+                                <h3>Exposed Ports & Services</h3>
+                                <div class="table-container">
+                                    <table id="ports-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Port</th>
+                                                <th>Service</th>
+                                                <th>Banner / Product</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Dynamically populated -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Sub-Grid: Tabs & Findings -->
+                        <div class="report-detailed-findings">
+                            <div class="tabs-header">
+                                <button class="tab-btn active" data-tab="summary-tab">
+                                    <i class="fa-solid fa-receipt"></i> Summary
+                                </button>
+                                <button class="tab-btn" data-tab="vulns-tab">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Vulnerabilities
+                                </button>
+                                <button class="tab-btn" data-tab="topology-tab">
+                                    <i class="fa-solid fa-network-wired"></i> Topology
+                                </button>
+                                <button class="tab-btn" data-tab="intel-tab">
+                                    <i class="fa-solid fa-globe"></i> Threat Intel
+                                </button>
+                                <button class="tab-btn" data-tab="remediation-tab">
+                                    <i class="fa-solid fa-check-double"></i> Tracker
+                                </button>
+                                <button class="tab-btn" data-tab="recon-tab">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i> Full Recon
+                                </button>
+                            </div>
+                            
+                            <div class="tabs-content">
+                                <!-- Executive Summary Tab -->
+                                <div id="summary-tab" class="tab-pane active">
+                                    <div class="ai-report-markdown" id="executive-summary-content">
+                                        <!-- Rendered Markdown goes here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Detailed Vulns Tab -->
+                                <div id="vulns-tab" class="tab-pane">
+                                    <div class="vulns-list-container" id="vulnerabilities-list">
+                                        <!-- Dynamic cards representing vulnerability details -->
+                                    </div>
+                                </div>
+
+                                <!-- Topology Tab -->
+                                <div id="topology-tab" class="tab-pane">
+                                    <div id="topology-container" class="topology-wrapper">
+                                        <!-- SVG will be injected here -->
+                                    </div>
+                                </div>
+
+                                <!-- Threat Intel Tab -->
+                                <div id="intel-tab" class="tab-pane">
+                                    <div id="threat-intel-container" class="intel-wrapper">
+                                        <!-- DNS and Threat Intel Data will be injected here -->
+                                    </div>
+                                </div>
+
+                                <!-- Remediation Tab -->
+                                <div id="remediation-tab" class="tab-pane">
+                                    <div class="remediation-header">
+                                        <h3>Remediation Progress</h3>
+                                        <div class="progress-bar-container">
+                                            <div id="remediation-progress-bar" class="progress-bar" style="width: 0%"></div>
+                                        </div>
+                                        <span id="remediation-score">Score: 0</span>
+                                    </div>
+                                    <div id="remediation-tracker-list" class="remediation-list">
+                                        <!-- Checkboxes will be injected here -->
+                                    </div>
+                                </div>
+
+                                <!-- Full Recon Report Tab -->
+                                <div id="recon-tab" class="tab-pane">
+                                    <div id="full-recon-container" class="full-recon-wrapper">
+                                        <!-- 14-section comprehensive recon report rendered here -->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="footer">
+            <p>CyberGuard AI — Secure Business Multi-Agent Framework. Operating under safety guidelines.</p>
+        </footer>
+    </div>
+
+    <!-- Script imports -->
+    <script src="app.js"></script>
+</body>
+</html>
