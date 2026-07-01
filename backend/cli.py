@@ -7,7 +7,7 @@ import getpass
 # Add parent directory to path to ensure imports work
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from agents.agents import CyberGuardAgentPipeline, COMPANY_PROFILES, generate_comprehensive_recon
+from agents.agents import SentinelAgentPipeline, COMPANY_PROFILES, generate_comprehensive_recon
 from tools.security import encrypt_data, decrypt_data, validate_target, validate_ip, validate_ports
 
 # Standard service name resolver (copied/adapted from main.py to remain independent)
@@ -181,7 +181,7 @@ def handle_scan(args):
             print(f"[WARNING] Key decryption failed: {e}. Running in simulation/fallback mode.")
             
     # Initializing Agent Pipeline
-    pipeline = CyberGuardAgentPipeline(api_key=api_key)
+    pipeline = SentinelAgentPipeline(api_key=api_key)
     
     profile_data = None
     
@@ -298,7 +298,7 @@ def handle_scan(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="CyberGuard AI CLI Agent - Multi-Agent Cybersecurity Scanner")
+    parser = argparse.ArgumentParser(description="Sentinel AI CLI Agent - Multi-Agent Cybersecurity Scanner")
     subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
     
     # Subcommand: set-key

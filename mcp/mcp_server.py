@@ -6,7 +6,7 @@ from mcp.server.fastmcp import FastMCP
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from agents.agents import CyberGuardAgentPipeline, COMPANY_PROFILES, generate_comprehensive_recon
+from agents.agents import SentinelAgentPipeline, COMPANY_PROFILES, generate_comprehensive_recon
 from tools.security import validate_target, validate_ip, validate_ports
 
 # Import real scanner
@@ -23,7 +23,7 @@ except ImportError:
 mcp = FastMCP("SentinelAI Security Scanner")
 
 # Initialize Pipeline
-pipeline = CyberGuardAgentPipeline()
+pipeline = SentinelAgentPipeline()
 
 # Standard service name resolver (copied/adapted from main.py to remain independent)
 def get_service_name(port: int) -> str:

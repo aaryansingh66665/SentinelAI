@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from agents.adk import Agent, Task, Workflow
 from tools.security import encrypt_data, decrypt_data, validate_target, validate_ip, validate_ports, TokenBucketRateLimiter
-from agents.agents import CyberGuardAgentPipeline
+from agents.agents import SentinelAgentPipeline
 
 def test_adk_classes():
     print("[TEST] Running ADK core tests...")
@@ -102,7 +102,7 @@ def test_security_utilities():
 
 def test_scanning_pipeline():
     print("[TEST] Running Scanning Pipeline test...")
-    pipeline = CyberGuardAgentPipeline()
+    pipeline = SentinelAgentPipeline()
     
     # Run scan on pre-configured profile
     recon_res = pipeline.run_recon_agent("ecommerce")
@@ -127,12 +127,12 @@ def test_scanning_pipeline():
 
 
 def run_all_tests():
-    print("=================== Running CyberGuard AI Test Suite ===================")
+    print("=================== Running Sentinel AI Test Suite ===================")
     try:
         test_adk_classes()
         test_security_utilities()
         test_scanning_pipeline()
-        print("\n[ALL PASS] CyberGuard AI is verified, secure, and ready for deployment.")
+        print("\n[ALL PASS] Sentinel AI is verified, secure, and ready for deployment.")
         sys.exit(0)
     except AssertionError as ae:
         print(f"\n[FAIL] Test assertion failed: {ae}")

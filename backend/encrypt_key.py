@@ -18,7 +18,7 @@ from tools.security import encrypt_data
 # Set GEMINI_API_KEY in your .env file (see .env.example) or as a system
 # environment variable before running this script.
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
-PASSPHRASE = os.environ.get("ENCRYPT_PASSPHRASE", "cyberguard")  # Default decryption passphrase
+PASSPHRASE = os.environ.get("ENCRYPT_PASSPHRASE", "sentinel")  # Default decryption passphrase
 
 if __name__ == "__main__":
     if not API_KEY:

@@ -1,5 +1,5 @@
 """
-scanner.py — Real Network Reconnaissance Module for CyberGuard AI
+scanner.py — Real Network Reconnaissance Module for Sentinel AI
 
 Performs actual network scanning using Python standard library + lightweight packages.
 No Shodan API key or nmap required.
@@ -581,7 +581,7 @@ def full_recon_scan(
 ) -> Dict[str, Any]:
     """
     Orchestrate a complete real reconnaissance scan.
-    Returns a unified result dict compatible with the CyberGuardAgentPipeline.
+    Returns a unified result dict compatible with the SentinelAgentPipeline.
     """
     if ports is None:
         ports = [21, 22, 23, 25, 80, 110, 143, 389, 443, 445, 

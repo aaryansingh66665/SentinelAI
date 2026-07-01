@@ -225,7 +225,7 @@ async function runScanPipeline(key) {
             });
         }
 
-        logToTerminal(`[ORCHESTRATOR] Starting CyberGuard Threat pipeline for target: ${targetText}`, "system-line");
+        logToTerminal(`[ORCHESTRATOR] Starting Sentinel Threat pipeline for target: ${targetText}`, "system-line");
 
         // Stage 1: Recon Agent Animation
         setAgentState("recon", "running");
@@ -505,7 +505,7 @@ function downloadReportMarkdown() {
     
     const a = document.createElement("a");
     a.href = url;
-    a.download = `CyberGuard_Report_${selectedProfileKey}_${new Date().toISOString().split('T')[0]}.md`;
+    a.download = `Sentinel_Report_${selectedProfileKey}_${new Date().toISOString().split('T')[0]}.md`;
     document.body.appendChild(a);
     a.click();
     

@@ -247,7 +247,7 @@ def get_fallback_executive_summary(company_name, description, recon_data, analys
     
     summary_text += (
         f"### Executive Overview\n"
-        f"CyberGuard AI has performed a {scan_type_label} of {company_name}. "
+        f"Sentinel AI has performed a {scan_type_label} of {company_name}. "
     )
     
     if is_real and len(ports_list) == 0:
@@ -527,7 +527,7 @@ def generate_comprehensive_recon(profile_name, recon_data, vulnerabilities):
     }
 
 
-class CyberGuardAgentPipeline:
+class SentinelAgentPipeline:
     def __init__(self, api_key=None):
         self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
         self.model = "gemini-1.5-flash"

@@ -5,7 +5,7 @@ import os
 from pydantic import BaseModel
 from typing import List
 
-from agents.agents import CyberGuardAgentPipeline, COMPANY_PROFILES, generate_comprehensive_recon
+from agents.agents import SentinelAgentPipeline, COMPANY_PROFILES, generate_comprehensive_recon
 from tools.security import validate_target, validate_ip, validate_ports, TokenBucketRateLimiter, decrypt_data
 
 # Import real scanner
@@ -48,7 +48,7 @@ if not os.environ.get("GEMINI_API_KEY") and os.path.exists(encrypted_env_path) a
 limiter = TokenBucketRateLimiter(rate=0.1, capacity=3)
 
 # Initialize Agent Pipeline
-pipeline = CyberGuardAgentPipeline()
+pipeline = SentinelAgentPipeline()
 
 class CustomScanPayload(BaseModel):
     name: str
