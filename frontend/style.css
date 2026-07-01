@@ -1,29 +1,35 @@
 /* Design tokens and variables */
 :root {
-    --bg-dark: linear-gradient(135deg, #002366 0%, #4169e1 45%, #ffffff 50%, #4169e1 55%, #002366 100%); /* Dual glossy Royal Blue tone */
-    --bg-panel: rgba(255, 255, 255, 0.2); /* White glass */
-    --bg-panel-border: rgba(255, 255, 255, 0.4);
-    --bg-terminal: rgba(255, 255, 255, 0.15); /* White glass for terminal */
+    /* Rich neutral background — deep charcoal to warm graphite */
+    --bg-dark: #0f0f11;
+    --bg-panel: rgba(28, 28, 34, 0.85);
+    --bg-panel-border: rgba(200, 170, 110, 0.18); /* Subtle champagne gold border */
+    --bg-terminal: #0a0a0c;
     --font-primary: 'Inter', sans-serif;
     --font-accent: 'Orbitron', sans-serif;
     --font-code: 'Fira Code', monospace;
-    
-    /* Harmonious Colors */
-    --color-primary: #00bfff; /* Lightning blue */
-    --color-primary-glow: rgba(0, 191, 255, 0.25);
-    --color-accent: #ffb6c1; /* Baby pink */
-    --color-accent-glow: rgba(255, 182, 193, 0.25);
-    
-    /* Status Colors */
-    --color-success: #50c878; /* Emerald green */
-    --color-warning: #ffff00; /* Yellow */
-    --color-danger: #ff0000; /* Bright red */
-    --color-text-main: #ffffff; /* White */
-    --color-text-muted: #aab2b7; /* Lighter steel grey for muted text */
+
+    /* Primary: Warm champagne gold — rich, premium feel */
+    --color-primary: #c8a96e;
+    --color-primary-glow: rgba(200, 169, 110, 0.2);
+
+    /* Accent: Soft platinum silver */
+    --color-accent: #e8e0d0;
+    --color-accent-glow: rgba(232, 224, 208, 0.15);
+
+    /* Status Colors — muted professional tones */
+    --color-success: #4caf82;  /* Sage green */
+    --color-warning: #d4943a;  /* Amber */
+    --color-danger:  #c0392b;  /* Deep crimson */
+
+    /* Typography */
+    --color-text-main: #ede8df;  /* Warm cream white */
+    --color-text-muted: #7a7570; /* Warm grey */
+
     --border-radius-lg: 16px;
     --border-radius-md: 10px;
     --border-radius-sm: 6px;
-    
+
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -35,7 +41,12 @@
 }
 
 body {
-    background: var(--bg-dark);
+    background-color: var(--bg-dark);
+    /* Subtle cross-hatched texture for depth */
+    background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(200, 169, 110, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 90%, rgba(100, 90, 180, 0.06) 0%, transparent 55%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.014'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-attachment: fixed;
     color: var(--color-text-main);
     font-family: var(--font-primary);
@@ -58,32 +69,32 @@ body {
 .glow-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.15;
+    filter: blur(140px);
+    opacity: 0.1;
 }
 
 .orb-1 {
-    top: -10%;
+    top: -15%;
     left: -10%;
-    width: 40vw;
-    height: 40vw;
-    background: radial-gradient(circle, var(--color-primary) 0%, transparent 80%);
+    width: 45vw;
+    height: 45vw;
+    background: radial-gradient(circle, #c8a96e 0%, transparent 70%);
 }
 
 .orb-2 {
-    bottom: -10%;
+    bottom: -15%;
     right: -10%;
     width: 50vw;
     height: 50vw;
-    background: radial-gradient(circle, var(--color-accent) 0%, transparent 80%);
+    background: radial-gradient(circle, #6a5acd 0%, transparent 70%);
 }
 
 .orb-3 {
-    top: 40%;
+    top: 35%;
     left: 50%;
     width: 30vw;
     height: 30vw;
-    background: radial-gradient(circle, #50c878 0%, transparent 80%);
+    background: radial-gradient(circle, #3d5a4c 0%, transparent 70%);
 }
 
 /* Layout Container */
