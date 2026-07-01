@@ -1,6 +1,6 @@
 /* Design tokens and variables */
 :root {
-    --bg-dark: #4169e1; /* Royal blue */
+    --bg-dark: linear-gradient(135deg, #002366 0%, #4169e1 45%, #ffffff 50%, #4169e1 55%, #002366 100%); /* Dual glossy Royal Blue tone */
     --bg-panel: rgba(255, 255, 255, 0.2); /* White glass */
     --bg-panel-border: rgba(255, 255, 255, 0.4);
     --bg-terminal: rgba(255, 255, 255, 0.15); /* White glass for terminal */
@@ -35,7 +35,8 @@
 }
 
 body {
-    background-color: var(--bg-dark);
+    background: var(--bg-dark);
+    background-attachment: fixed;
     color: var(--color-text-main);
     font-family: var(--font-primary);
     overflow-x: hidden;
