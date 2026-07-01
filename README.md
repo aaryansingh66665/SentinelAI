@@ -191,14 +191,37 @@ python backend/cli.py scan --profile clinic --output report.md
 
 ---
 
-## 📈 How to Analyze Results
+## 📈 How to Analyze Results & Use the Intelligence
 
-Once a scan completes (either via the Web Dashboard or CLI), SentinelAI outputs a **Comprehensive Executive Report**. Here is how to interpret the results:
+Once a scan completes (either via the Web Dashboard or CLI), SentinelAI outputs a **Comprehensive Executive Report** structured into four distinct AI-analyzed layers. Here is a detailed breakdown of what to look for and how to use this intelligence:
 
-1. **Reconnaissance Data**: Review the open ports, detected services, and DNS/SSL configurations found during the live or simulated scan. Look out for unexpected open ports (like 3389 RDP or 23 Telnet).
-2. **Vulnerabilities**: The system matches detected services to known CVEs or misconfigurations. Review the "Severity" (Critical, High, Medium, Low) and the specific "Remediation" steps provided by the AI.
-3. **Risk Analysis**: The AI calculates a business risk score based on the combination of vulnerabilities and the business profile. An e-commerce site with an open database port will flag a much higher risk than an internal test server.
-4. **Executive Report**: A formatted Markdown report is generated. If you used the CLI with the `--output` flag, you can open this markdown file in any standard editor to present directly to stakeholders.
+### 1. Reconnaissance Data (The Attack Surface)
+* **What it is**: The raw output of live network socket connections, banner grabs, and DNS lookups.
+* **Important Things to Look For**: 
+  * Unnecessary exposed ports (e.g., `3389 RDP`, `23 Telnet`, or `3306 MySQL`) facing the public internet.
+  * Expiring or outdated SSL/TLS certificates (e.g., TLS 1.0/1.1).
+  * Missing critical DNS security records like DMARC or SPF.
+* **How to use it**: Use this data to immediately restrict firewall rules, close unused ports, and update external DNS routing configurations.
+
+### 2. Vulnerability Mapping (The Weaknesses)
+* **What it is**: The AI matches detected services and banners to known CVEs (Common Vulnerabilities and Exposures) and severe misconfigurations.
+* **Important Things to Look For**:
+  * **Critical & High Severity CVEs**: Vulnerabilities allowing Remote Code Execution (RCE) or unauthenticated data access.
+  * Known vulnerable software versions (e.g., an outdated Apache server).
+* **How to use it**: Prioritize patching systems highlighted here. The AI provides explicit **Remediation steps** for each vulnerability, which you can hand directly to DevOps or IT engineering teams for mitigation.
+
+### 3. Business Risk Analysis (The Context)
+* **What it is**: Contextualized threat modeling. The Risk Analysis agent cross-references the vulnerabilities against the *type* of business (e.g., E-commerce vs. Dental Clinic).
+* **Important Things to Look For**:
+  * The **Risk Level**: An exposed database port might be "Medium" risk on a dev server, but "Critical" risk on a clinic storing PHI (Protected Health Information).
+  * **Business Impact**: How the vulnerabilities directly threaten revenue, compliance (HIPAA, PCI-DSS), or reputation.
+* **How to use it**: Use this section to triage and justify security budgets or immediate emergency downtime to management. It translates technical jargon into business impact.
+
+### 4. Executive Summary Report (The Deliverable)
+* **What it is**: A finalized, professional Markdown report synthesizing the entire pipeline.
+* **How to use it**: 
+  * **Via Dashboard**: Review the summarized metrics (Overall Risk Score, Attack Surface Score) visually.
+  * **Via CLI**: Run the scan with the `--output report.md` flag. You can export this markdown file into a PDF or hand it directly to non-technical stakeholders, clients, or C-Suite executives to provide a clear, actionable security posture overview.
 
 ---
 
