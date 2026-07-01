@@ -1,25 +1,25 @@
 /* Design tokens and variables */
 :root {
-    --bg-dark: #070913;
-    --bg-panel: rgba(14, 19, 39, 0.45);
-    --bg-panel-border: rgba(255, 255, 255, 0.08);
-    --bg-terminal: #04060d;
+    --bg-dark: #2c3539; /* Steel grey */
+    --bg-panel: rgba(44, 53, 57, 0.6); /* Steel grey with transparency */
+    --bg-panel-border: rgba(255, 255, 255, 0.15);
+    --bg-terminal: #1a2023; /* Darker steel grey */
     --font-primary: 'Inter', sans-serif;
     --font-accent: 'Orbitron', sans-serif;
     --font-code: 'Fira Code', monospace;
     
-    /* Neon Harmonious Colors */
-    --color-primary: #00f0ff; /* Neon cyan */
-    --color-primary-glow: rgba(0, 240, 255, 0.15);
-    --color-accent: #ff007f; /* Neon pink */
-    --color-accent-glow: rgba(255, 0, 127, 0.15);
+    /* Harmonious Colors */
+    --color-primary: #00bfff; /* Lightning blue */
+    --color-primary-glow: rgba(0, 191, 255, 0.15);
+    --color-accent: #ffffff; /* White */
+    --color-accent-glow: rgba(255, 255, 255, 0.15);
     
     /* Status Colors */
-    --color-success: #00ff66; /* Emerald neon */
+    --color-success: #50c878; /* Emerald green */
     --color-warning: #ffaa00; /* Warning orange */
     --color-danger: #ff0055; /* Alert red */
-    --color-text-main: #e2e8f0;
-    --color-text-muted: #8a99ad;
+    --color-text-main: #ffffff; /* White */
+    --color-text-muted: #aab2b7; /* Lighter steel grey for muted text */
     --border-radius-lg: 16px;
     --border-radius-md: 10px;
     --border-radius-sm: 6px;
@@ -82,7 +82,7 @@ body {
     left: 50%;
     width: 30vw;
     height: 30vw;
-    background: radial-gradient(circle, #5500ff 0%, transparent 80%);
+    background: radial-gradient(circle, #50c878 0%, transparent 80%);
 }
 
 /* Layout Container */
