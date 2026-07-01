@@ -33,7 +33,9 @@ Want to try SentinelAI immediately without any local setup? Use our hosted onlin
 
 SentinelAI is built using a modern, robust, and scalable technology stack:
 
+* **Languages**: Python (Backend/AI Agents), JavaScript (Frontend Dashboard), HTML5, CSS3
 * **Backend Framework**: Python 3, FastAPI, Uvicorn (ASGI)
+* **Core Packages**: `google-generativeai`, `mcp`, `pydantic`, `cryptography`, `requests`, `dnspython`
 * **AI & LLM Integration**: Google Generative AI (Gemini), MCP (Model Context Protocol)
 * **Security & Cryptography**: Python `cryptography` module (PBKDF2HMAC, AES-256-GCM)
 * **Network Scanning**: Custom socket implementations, DNSPython
@@ -152,12 +154,17 @@ SentinelAI can be easily deployed in isolated containers. Ensure you have Docker
    pip install -r requirements.txt
    ```
 
-4. **Set & Encrypt your Gemini API Key**:
-   Instead of storing your key in plaintext, SentinelAI provides a CLI to encrypt it locally:
-   ```bash
-   python backend/cli.py set-key
-   ```
-   *(You will be prompted to enter your API key and a secure decryption password).*
+4. **Where to Insert Your Gemini API Key**:
+   You must provide a valid Google Gemini API Key for the AI Agents to function. You can provide it in two ways:
+   * **Option A (Environment Variable)**: Create a `.env` file in the root directory and add:
+     ```env
+     GEMINI_API_KEY=your_api_key_here
+     ```
+   * **Option B (Secure Encrypted Storage)**: Use the built-in CLI to securely encrypt and store your key in a `.env.enc` file:
+     ```bash
+     python backend/cli.py set-key
+     ```
+     *(You will be prompted to enter your API key and a secure decryption password).*
 
 5. **Start the FastAPI Web Server**:
    ```bash
@@ -181,6 +188,17 @@ python backend/cli.py scan --profile ecommerce
 ```bash
 python backend/cli.py scan --profile clinic --output report.md
 ```
+
+---
+
+## 📈 How to Analyze Results
+
+Once a scan completes (either via the Web Dashboard or CLI), SentinelAI outputs a **Comprehensive Executive Report**. Here is how to interpret the results:
+
+1. **Reconnaissance Data**: Review the open ports, detected services, and DNS/SSL configurations found during the live or simulated scan. Look out for unexpected open ports (like 3389 RDP or 23 Telnet).
+2. **Vulnerabilities**: The system matches detected services to known CVEs or misconfigurations. Review the "Severity" (Critical, High, Medium, Low) and the specific "Remediation" steps provided by the AI.
+3. **Risk Analysis**: The AI calculates a business risk score based on the combination of vulnerabilities and the business profile. An e-commerce site with an open database port will flag a much higher risk than an internal test server.
+4. **Executive Report**: A formatted Markdown report is generated. If you used the CLI with the `--output` flag, you can open this markdown file in any standard editor to present directly to stakeholders.
 
 ---
 
