@@ -9,14 +9,14 @@
     --font-code: 'Fira Code', monospace;
     
     /* Harmonious Colors */
-    --color-primary: #ff0000; /* Bright red */
-    --color-primary-glow: rgba(255, 0, 0, 0.25);
+    --color-primary: #00bfff; /* Lightning blue */
+    --color-primary-glow: rgba(0, 191, 255, 0.25);
     --color-accent: #ffb6c1; /* Baby pink */
     --color-accent-glow: rgba(255, 182, 193, 0.25);
     
     /* Status Colors */
-    --color-success: #ffff00; /* Yellow */
-    --color-warning: #ffaa00; /* Warning orange */
+    --color-success: #50c878; /* Emerald green */
+    --color-warning: #ffff00; /* Yellow */
     --color-danger: #ff0000; /* Bright red */
     --color-text-main: #ffffff; /* White */
     --color-text-muted: #aab2b7; /* Lighter steel grey for muted text */
