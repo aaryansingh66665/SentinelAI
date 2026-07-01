@@ -1,9 +1,9 @@
 /* Design tokens and variables */
 :root {
-    --bg-dark: #2c3539; /* Steel grey */
-    --bg-panel: rgba(44, 53, 57, 0.6); /* Steel grey with transparency */
-    --bg-panel-border: rgba(255, 255, 255, 0.15);
-    --bg-terminal: #1a2023; /* Darker steel grey */
+    --bg-dark: #4169e1; /* Royal blue */
+    --bg-panel: rgba(255, 255, 255, 0.2); /* White glass */
+    --bg-panel-border: rgba(255, 255, 255, 0.4);
+    --bg-terminal: rgba(255, 255, 255, 0.15); /* White glass for terminal */
     --font-primary: 'Inter', sans-serif;
     --font-accent: 'Orbitron', sans-serif;
     --font-code: 'Fira Code', monospace;
