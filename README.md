@@ -226,4 +226,4 @@ Once a scan completes (either via the Web Dashboard or CLI), SentinelAI outputs 
 ---
 
 ## 📜 License
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under a [Personal Use Only License](LICENSE).
