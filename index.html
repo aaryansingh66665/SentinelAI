@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentinelAI – Enterprise Multi-Agent Threat Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050911;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(0,210,255,0.18);
+      --accent1: #00d2ff;
+      --accent2: #7b2fff;
+      --accent3: #ff4b6e;
+      --accent4: #00ffb3;
+      --text: #e8f0fe;
+      --muted: #8899bb;
+      --card-bg: rgba(10,18,40,0.72);
+    }
+    html, body { width:100%;height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);overflow:hidden; }
+    #stars { position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden; }
+    .star { position:absolute;border-radius:50%;background:white;animation:twinkle 4s infinite alternate; }
+    @keyframes twinkle { 0%{opacity:.15;transform:scale(1)} 100%{opacity:.9;transform:scale(1.4)} }
+    .blob { position:fixed;border-radius:50%;filter:blur(120px);opacity:.22;pointer-events:none;z-index:0;animation:drift 14s ease-in-out infinite alternate; }
+    .blob1 { width:600px;height:600px;background:var(--accent2);top:-200px;left:-150px; }
+    .blob2 { width:500px;height:500px;background:var(--accent1);bottom:-100px;right:-100px;animation-delay:-7s; }
+    .blob3 { width:350px;height:350px;background:var(--accent3);top:40%;left:55%;animation-delay:-3s; }
+    @keyframes drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(40px,30px) scale(1.08)} }
+    #deck { position:relative;z-index:2;width:100%;height:100vh; }
+    .slide { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 80px;opacity:0;pointer-events:none;transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1);transform:translateY(40px); }
+    .slide.active { opacity:1;pointer-events:all;transform:translateY(0); }
+    .slide-num { position:absolute;top:22px;right:36px;font-size:12px;color:var(--muted);font-weight:600;letter-spacing:2px;font-family:'JetBrains Mono',monospace; }
+    .tag { display:inline-block;padding:4px 14px;border-radius:99px;border:1px solid var(--accent1);color:var(--accent1);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:18px;background:rgba(0,210,255,.07); }
+    h1 { font-size:clamp(2.6rem,5vw,4.2rem);font-weight:900;line-height:1.05; }
+    h2 { font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;line-height:1.1;margin-bottom:8px; }
+    h3 { font-size:1.15rem;font-weight:700;margin-bottom:6px; }
+    p { line-height:1.75;color:var(--muted); }
+    .gradient-text { background:linear-gradient(135deg,var(--accent1) 0%,var(--accent2) 60%,var(--accent3) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .glass { background:var(--card-bg);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px); }
+    #nav { position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;background:rgba(5,9,17,.75);border:1px solid var(--border);border-radius:99px;padding:10px 22px;backdrop-filter:blur(20px);z-index:10; }
+    #nav button { background:none;border:none;cursor:pointer;padding:6px 10px;color:var(--accent1);font-size:18px;border-radius:8px;transition:background .2s; }
+    #nav button:hover { background:rgba(0,210,255,.12); }
+    #progress-dots { display:flex;gap:8px;align-items:center; }
+    .dot { width:8px;height:8px;border-radius:50%;background:var(--muted);cursor:pointer;transition:all .3s; }
+    .dot.active { background:var(--accent1);transform:scale(1.4);box-shadow:0 0 8px var(--accent1); }
+    #hint { position:fixed;bottom:30px;right:36px;color:var(--muted);font-size:11px;letter-spacing:1.5px;font-family:'JetBrains Mono',monospace;z-index:10; }
+    /* Slide 1 */
+    #s1 { text-align:center;gap:20px; }
+    .logo-ring { width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 24px;box-shadow:0 0 60px rgba(0,210,255,.45),0 0 120px rgba(123,47,255,.3);animation:pulse-ring 3s ease-in-out infinite; }
+    @keyframes pulse-ring { 0%,100%{box-shadow:0 0 40px rgba(0,210,255,.4),0 0 80px rgba(123,47,255,.25)} 50%{box-shadow:0 0 80px rgba(0,210,255,.7),0 0 140px rgba(123,47,255,.5)} }
+    .chip { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:99px;padding:7px 18px;font-size:13px;font-weight:500; }
+    .chip-dot { width:8px;height:8px;border-radius:50%; }
+    /* Slide 2 */
+    .problem-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;width:100%;max-width:1100px;margin-top:32px; }
+    .pcard { padding:28px 24px;border-radius:18px;border:1px solid var(--border);background:var(--card-bg);backdrop-filter:blur(20px);transition:transform .3s,border-color .3s; }
+    .pcard:hover { transform:translateY(-6px);border-color:var(--accent1); }
+    .pcard .icon { font-size:34px;margin-bottom:14px; }
+    .stat { font-size:2.4rem;font-weight:900; }
+    .stat-label { font-size:13px;color:var(--muted);margin-top:4px; }
+    /* Slide 3 */
+    .who-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:1100px;margin-top:28px; }
+    .who-card { padding:26px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:var(--card-bg);backdrop-filter:blur(18px);transition:transform .3s,border-color .3s; }
+    .who-card:hover { transform:translateY(-5px); }
+    .who-card.c1:hover { border-color:var(--accent1); }
+    .who-card.c2:hover { border-color:var(--accent2); }
+    .who-card.c3:hover { border-color:var(--accent3); }
+    .who-card.c4:hover { border-color:var(--accent4); }
+    .who-card.c5:hover { border-color:#ffc800; }
+    .who-card.c6:hover { border-color:#ff7832; }
+    .who-icon { font-size:30px;margin-bottom:12px; }
+    /* Slide 4 */
+    .why-wrap { display:grid;grid-template-columns:1fr 1fr;gap:28px;width:100%;max-width:1000px;margin-top:28px; }
+    .why-item { display:flex;gap:18px;align-items:flex-start;padding:22px;border-radius:16px;background:var(--card-bg);border:1px solid var(--border);backdrop-filter:blur(18px); }
+    .why-bar { width:4px;border-radius:4px;flex-shrink:0;align-self:stretch; }
+    /* Slide 5 */
+    .arch-wrap { width:100%;max-width:1100px;margin-top:24px; }
+    .pipeline { display:flex;align-items:stretch;gap:0;border-radius:18px;overflow:hidden;border:1px solid var(--border); }
+    .pipe-stage { flex:1;padding:24px 18px;border-right:1px solid var(--border);background:var(--card-bg);text-align:center;transition:background .3s; }
+    .pipe-stage:last-child { border-right:none; }
+    .pipe-stage:hover { background:rgba(0,210,255,.07); }
+    .pipe-num { font-size:11px;color:var(--accent1);font-weight:700;letter-spacing:2px;margin-bottom:8px; }
+    .pipe-icon { font-size:28px;margin-bottom:10px; }
+    .pipe-title { font-weight:700;font-size:.95rem;margin-bottom:6px; }
+    .pipe-desc { font-size:.78rem;color:var(--muted);line-height:1.5; }
+    .tech-row { display:flex;flex-wrap:wrap;gap:12px;margin-top:22px; }
+    .tech-badge { padding:8px 18px;border-radius:99px;font-size:13px;font-weight:600;background:rgba(255,255,255,.05);border:1px solid var(--border); }
+    /* Slide 6 */
+    .agents-layout { display:flex;gap:28px;width:100%;max-width:1100px;margin-top:24px;align-items:flex-start; }
+    .coord-card { background:linear-gradient(135deg,rgba(123,47,255,.25),rgba(0,210,255,.1));border:1px solid var(--accent2);border-radius:18px;padding:26px 20px;text-align:center;box-shadow:0 0 40px rgba(123,47,255,.25);width:220px;flex-shrink:0; }
+    .workers-grid { flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    .worker-card { padding:20px 18px;border-radius:14px;background:var(--card-bg);border:1px solid var(--border);backdrop-filter:blur(16px);transition:border-color .3s,transform .3s; }
+    .worker-card:hover { border-color:var(--accent1);transform:translateY(-4px); }
+    .worker-label { font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent1);margin-bottom:6px; }
+    /* Slide 7 */
+    .tech-trio { display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;width:100%;max-width:1060px;margin-top:28px; }
+    .trio-card { padding:30px 24px;border-radius:20px;background:var(--card-bg);border:1px solid var(--border);backdrop-filter:blur(20px);transition:transform .3s,border-color .3s,box-shadow .3s;text-align:center; }
+    .trio-card:hover { transform:translateY(-8px); }
+    .trio-card.adk:hover { border-color:var(--accent2);box-shadow:0 8px 40px rgba(123,47,255,.25); }
+    .trio-card.mcp:hover { border-color:var(--accent1);box-shadow:0 8px 40px rgba(0,210,255,.25); }
+    .trio-card.gem:hover { border-color:var(--accent4);box-shadow:0 8px 40px rgba(0,255,179,.25); }
+    .trio-icon { font-size:44px;margin-bottom:16px; }
+    .feat-list { list-style:none;margin-top:14px;text-align:left; }
+    .feat-list li { font-size:13px;color:var(--muted);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:8px;align-items:baseline; }
+    .feat-list li::before { content:'▸';color:var(--accent1);flex-shrink:0; }
+    /* Slide 8 */
+    .tools-grid { display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:1000px;margin-top:28px; }
+    .tool-section { padding:26px 22px;border-radius:18px;background:var(--card-bg);border:1px solid var(--border);backdrop-filter:blur(18px); }
+    .tool-item { display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05); }
+    .tool-item:last-child { border-bottom:none; }
+    .tool-icon { font-size:22px;flex-shrink:0;margin-top:2px; }
+    /* Slide 9 */
+    .sec-grid { display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:1000px;margin-top:28px; }
+    .sec-card { padding:26px 22px;border-radius:18px;background:var(--card-bg);border:1px solid var(--border);backdrop-filter:blur(18px); }
+    .sec-item { display:flex;gap:14px;align-items:flex-start;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05); }
+    .sec-item:last-child { border-bottom:none; }
+    .check { color:var(--accent4);font-size:16px;flex-shrink:0;margin-top:2px; }
+    /* Slide 10 */
+    #s10 { text-align:center;gap:24px; }
+    .outro-grid { display:flex;gap:22px;flex-wrap:wrap;justify-content:center;margin-top:16px; }
+    .outro-card { padding:22px 28px;border-radius:18px;background:var(--card-bg);border:1px solid var(--border);backdrop-filter:blur(18px);min-width:200px; }
+    .outro-val { font-size:2rem;font-weight:900; }
+    .cta-btn { display:inline-block;padding:14px 40px;border-radius:99px;font-weight:700;font-size:15px;cursor:pointer;background:linear-gradient(135deg,var(--accent2),var(--accent1));color:white;border:none;margin-top:24px;box-shadow:0 4px 30px rgba(0,210,255,.35);text-decoration:none;transition:transform .2s,box-shadow .2s; }
+    .cta-btn:hover { transform:translateY(-3px);box-shadow:0 8px 40px rgba(0,210,255,.5); }
+  </style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<div id="deck">
+
+  <!-- SLIDE 1: TITLE -->
+  <div class="slide active" id="s1">
+    <div class="slide-num">01 / 10</div>
+    <div class="logo-ring">🛡️</div>
+    <div class="tag">Enterprise Cybersecurity AI</div>
+    <h1 class="gradient-text">SentinelAI</h1>
+    <h2 style="font-size:1.35rem;font-weight:400;color:var(--muted);margin-top:8px">Multi-Agent Threat Intelligence &amp; Security Scanner</h2>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:28px">
+      <div class="chip"><span class="chip-dot" style="background:var(--accent1)"></span>Multi-Agent Pipeline</div>
+      <div class="chip"><span class="chip-dot" style="background:var(--accent2)"></span>ADK + MCP + Gemini</div>
+      <div class="chip"><span class="chip-dot" style="background:var(--accent4)"></span>AES-256 Security</div>
+      <div class="chip"><span class="chip-dot" style="background:var(--accent3)"></span>Real-time Scanning</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM -->
+  <div class="slide" id="s2">
+    <div class="slide-num">02 / 10</div>
+    <div class="tag">The Problem</div>
+    <h2>What Problem Exists?</h2>
+    <p style="max-width:680px;text-align:center">Cyber threats escalate at unprecedented speed while organisations rely on fragmented, manual, slow security tools that cannot keep pace with the modern threat landscape.</p>
+    <div class="problem-grid">
+      <div class="pcard">
+        <div class="icon">💸</div>
+        <div class="stat gradient-text">$4.88M</div>
+        <div class="stat-label">Average cost of a data breach in 2024 (IBM)</div>
+        <p style="margin-top:12px;font-size:13px">Organisations lack automated, intelligent tools to detect vulnerabilities before attackers do.</p>
+      </div>
+      <div class="pcard">
+        <div class="icon">⏱️</div>
+        <div class="stat gradient-text">277 Days</div>
+        <div class="stat-label">Average time to identify &amp; contain a breach</div>
+        <p style="margin-top:12px;font-size:13px">Manual reconnaissance &amp; analysis processes are too slow to counter real-time attack vectors.</p>
+      </div>
+      <div class="pcard">
+        <div class="icon">🧩</div>
+        <div class="stat gradient-text">60%+</div>
+        <div class="stat-label">SMBs lack dedicated security teams</div>
+        <p style="margin-top:12px;font-size:13px">No affordable, autonomous intelligence tool exists for businesses without large security budgets.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: WHO FACES IT -->
+  <div class="slide" id="s3">
+    <div class="slide-num">03 / 10</div>
+    <div class="tag">Target Audience</div>
+    <h2>Who Faces This Problem?</h2>
+    <p style="max-width:660px;text-align:center">SentinelAI is built for any organisation that stores, processes, or transmits sensitive data — regardless of size.</p>
+    <div class="who-grid">
+      <div class="who-card c1">
+        <div class="who-icon">🏥</div>
+        <h3>Healthcare Providers</h3>
+        <p style="font-size:13px">Clinics storing PHI under HIPAA compliance with critical infrastructure exposures and ransomware targets.</p>
+      </div>
+      <div class="who-card c2">
+        <div class="who-icon">🛒</div>
+        <h3>E-Commerce Platforms</h3>
+        <p style="font-size:13px">Online stores handling PCI-DSS regulated cardholder data vulnerable to SQL injection and payment fraud.</p>
+      </div>
+      <div class="who-card c3">
+        <div class="who-icon">🏦</div>
+        <h3>Financial Institutions</h3>
+        <p style="font-size:13px">Banks and fintech firms with exposed APIs, misconfigured endpoints, and legacy-stack vulnerabilities.</p>
+      </div>
+      <div class="who-card c4">
+        <div class="who-icon">🔐</div>
+        <h3>Security Teams &amp; Pentesters</h3>
+        <p style="font-size:13px">Red &amp; blue teams needing rapid, automated reconnaissance and CVE mapping during security audits.</p>
+      </div>
+      <div class="who-card c5">
+        <div class="who-icon">🏢</div>
+        <h3>SMBs &amp; Startups</h3>
+        <p style="font-size:13px">Growing companies without dedicated security staff who need instant, actionable threat intelligence.</p>
+      </div>
+      <div class="who-card c6">
+        <div class="who-icon">🎓</div>
+        <h3>Research &amp; Education</h3>
+        <p style="font-size:13px">Universities and labs with exposed research servers and sensitive academic intellectual property at risk.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: WHY IMPORTANT -->
+  <div class="slide" id="s4">
+    <div class="slide-num">04 / 10</div>
+    <div class="tag">Impact &amp; Importance</div>
+    <h2>Why Is This Important?</h2>
+    <p style="max-width:680px;text-align:center">SentinelAI transforms reactive cybersecurity into a proactive, AI-driven intelligence operation.</p>
+    <div class="why-wrap">
+      <div class="why-item">
+        <div class="why-bar" style="background:var(--accent1)"></div>
+        <div><h3>Autonomous Threat Detection</h3><p style="font-size:13px">Replaces hours of manual pen-testing with a 4-agent AI pipeline completing recon-to-report in minutes, not days.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-bar" style="background:var(--accent2)"></div>
+        <div><h3>Business Context Awareness</h3><p style="font-size:13px">Cross-references vulnerabilities against industry type — a database exposure carries different risk on a clinic vs. a dev server.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-bar" style="background:var(--accent3)"></div>
+        <div><h3>Democratises Cybersecurity</h3><p style="font-size:13px">Delivers enterprise-grade threat intelligence to SMBs without needing a full Security Operations Centre (SOC).</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-bar" style="background:var(--accent4)"></div>
+        <div><h3>Compliance &amp; Risk Reporting</h3><p style="font-size:13px">Generates executive-ready reports translating technical CVEs into HIPAA, PCI-DSS, and business risk language.</p></div>
+      </div>
+      <div class="why-item" style="grid-column:span 2">
+        <div class="why-bar" style="background:linear-gradient(180deg,var(--accent1),var(--accent2))"></div>
+        <div><h3>Prevents $M+ in Breach Costs Through Early Detection</h3><p style="font-size:13px">By automating identification of misconfigurations, exposed ports, and outdated services before attackers exploit them, SentinelAI prevents breaches averaging $4.88M — turning security from a cost centre into a strategic advantage.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: ARCHITECTURE -->
+  <div class="slide" id="s5">
+    <div class="slide-num">05 / 10</div>
+    <div class="tag">System Architecture</div>
+    <h2>Multi-Agent Pipeline Architecture</h2>
+    <div class="arch-wrap">
+      <div class="pipeline">
+        <div class="pipe-stage">
+          <div class="pipe-num">STEP 01</div>
+          <div class="pipe-icon">🌐</div>
+          <div class="pipe-title">Live Network Scanner</div>
+          <div class="pipe-desc">Socket connections · Port scanning · Banner grabs · DNS lookups</div>
+        </div>
+        <div class="pipe-stage">
+          <div class="pipe-num">STEP 02</div>
+          <div class="pipe-icon">🔭</div>
+          <div class="pipe-title">Recon Agent</div>
+          <div class="pipe-desc">Attack surface mapping · Service fingerprinting · SSL analysis</div>
+        </div>
+        <div class="pipe-stage">
+          <div class="pipe-num">STEP 03</div>
+          <div class="pipe-icon">🐛</div>
+          <div class="pipe-title">Vulnerability Agent</div>
+          <div class="pipe-desc">CVE matching · CVSS scoring · Misconfiguration detection</div>
+        </div>
+        <div class="pipe-stage">
+          <div class="pipe-num">STEP 04</div>
+          <div class="pipe-icon">📊</div>
+          <div class="pipe-title">Risk Analysis Agent</div>
+          <div class="pipe-desc">Business context · HIPAA / PCI-DSS · Impact scoring</div>
+        </div>
+        <div class="pipe-stage">
+          <div class="pipe-num">STEP 05</div>
+          <div class="pipe-icon">📝</div>
+          <div class="pipe-title">Report Agent</div>
+          <div class="pipe-desc">Executive Markdown · Structured JSON · Actionable remediation</div>
+        </div>
+      </div>
+      <div class="tech-row">
+        <div class="tech-badge" style="border-color:var(--accent2);color:var(--accent2)">🐍 Python 3 + FastAPI</div>
+        <div class="tech-badge" style="border-color:var(--accent1);color:var(--accent1)">⚡ Uvicorn ASGI</div>
+        <div class="tech-badge" style="border-color:var(--accent4);color:var(--accent4)">🤖 Gemini LLM</div>
+        <div class="tech-badge" style="border-color:var(--accent3);color:var(--accent3)">🔗 MCP Protocol</div>
+        <div class="tech-badge">🐳 Docker</div>
+        <div class="tech-badge">🔐 AES-256 GCM</div>
+        <div class="tech-badge">🌐 Vanilla JS UI</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: COORDINATOR + WORKER AGENTS -->
+  <div class="slide" id="s6">
+    <div class="slide-num">06 / 10</div>
+    <div class="tag">Agent Design</div>
+    <h2>Coordinator &amp; Worker Agents</h2>
+    <div class="agents-layout">
+      <div>
+        <div class="coord-card">
+          <div style="font-size:38px;margin-bottom:14px">🧠</div>
+          <h3 style="color:var(--accent2)">Coordinator Agent</h3>
+          <p style="font-size:12px;margin-top:10px;line-height:1.6">Orchestrates the full pipeline · Routes data between agents · Manages state · Enforces sequence &amp; error handling</p>
+          <div style="margin-top:14px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">adk.py · AgentPipeline</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;margin-top:8px;gap:4px">
+          <div style="width:2px;height:20px;background:linear-gradient(180deg,var(--accent2),var(--accent1));opacity:.5"></div>
+          <div style="font-size:11px;color:var(--muted)">dispatches</div>
+          <div style="width:2px;height:20px;background:linear-gradient(180deg,var(--accent1),var(--accent4));opacity:.5"></div>
+        </div>
+      </div>
+      <div class="workers-grid">
+        <div class="worker-card">
+          <div class="worker-label">WORKER AGENT 01</div>
+          <div style="font-size:24px;margin-bottom:8px">🔭</div>
+          <h3>Reconnaissance Agent</h3>
+          <p style="font-size:12px;margin-top:6px">Performs port scans, banner grabbing, DNS record analysis, and SSL certificate inspection to map the full attack surface.</p>
+        </div>
+        <div class="worker-card">
+          <div class="worker-label">WORKER AGENT 02</div>
+          <div style="font-size:24px;margin-bottom:8px">🐛</div>
+          <h3>Vulnerability Agent</h3>
+          <p style="font-size:12px;margin-top:6px">Cross-references discovered services with known CVEs, misconfigurations, and severity classifications using Gemini.</p>
+        </div>
+        <div class="worker-card">
+          <div class="worker-label">WORKER AGENT 03</div>
+          <div style="font-size:24px;margin-bottom:8px">📊</div>
+          <h3>Risk Analysis Agent</h3>
+          <p style="font-size:12px;margin-top:6px">Contextualises technical findings against business type (healthcare, fintech, e-commerce) to produce risk scores and compliance flags.</p>
+        </div>
+        <div class="worker-card">
+          <div class="worker-label">WORKER AGENT 04</div>
+          <div style="font-size:24px;margin-bottom:8px">📝</div>
+          <h3>Report Generation Agent</h3>
+          <p style="font-size:12px;margin-top:6px">Synthesises all agent outputs into a structured executive Markdown report with CVSS summaries and remediation steps.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: ADK + MCP + GEMINI -->
+  <div class="slide" id="s7">
+    <div class="slide-num">07 / 10</div>
+    <div class="tag">Core Technologies</div>
+    <h2>ADK · MCP Server · Gemini</h2>
+    <div class="tech-trio">
+      <div class="trio-card adk">
+        <div class="trio-icon">⚙️</div>
+        <h3 style="color:var(--accent2)">Agent Development Kit (ADK)</h3>
+        <p style="font-size:13px;margin-top:8px">Custom-built orchestration framework defining Agent, Task &amp; Workflow abstractions for the multi-agent pipeline.</p>
+        <ul class="feat-list">
+          <li>Modular agent definition &amp; sequencing</li>
+          <li>Task context passing between agents</li>
+          <li>Error isolation per agent stage</li>
+          <li>Extendable workflow engine</li>
+          <li>adk.py · agents.py integration</li>
+        </ul>
+      </div>
+      <div class="trio-card mcp">
+        <div class="trio-icon">🔌</div>
+        <h3 style="color:var(--accent1)">MCP Server</h3>
+        <p style="font-size:13px;margin-top:8px">FastMCP-powered server exposing SentinelAI scans directly to AI agentic workflows and MCP-compatible clients.</p>
+        <ul class="feat-list">
+          <li>run_security_scan tool exposed</li>
+          <li>run_custom_security_scan tool</li>
+          <li>Compatible with Claude Desktop</li>
+          <li>Works with Gemini IDEs</li>
+          <li>Enables agent-to-agent calling</li>
+        </ul>
+      </div>
+      <div class="trio-card gem">
+        <div class="trio-icon">🤖</div>
+        <h3 style="color:var(--accent4)">Gemini LLM</h3>
+        <p style="font-size:13px;margin-top:8px">Google Generative AI (Gemini) powers all four agents — enabling natural language vulnerability analysis and report generation.</p>
+        <ul class="feat-list">
+          <li>CVE reasoning &amp; mapping</li>
+          <li>Business risk contextualisation</li>
+          <li>Executive report authoring</li>
+          <li>AES-256 encrypted API key storage</li>
+          <li>google-generativeai SDK</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: EXTERNAL TOOLS + DATABASE -->
+  <div class="slide" id="s8">
+    <div class="slide-num">08 / 10</div>
+    <div class="tag">Tools &amp; Data</div>
+    <h2>External Tools &amp; Database</h2>
+    <div class="tools-grid">
+      <div class="tool-section">
+        <h3 style="color:var(--accent1);margin-bottom:16px">🔧 External Tools &amp; Integrations</h3>
+        <div class="tool-item">
+          <div class="tool-icon">🌐</div>
+          <div><h3 style="font-size:.9rem">Custom Socket Scanner</h3><p style="font-size:12px">Raw TCP socket connections for port probing and service banner grabbing on target hosts</p></div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">🔍</div>
+          <div><h3 style="font-size:.9rem">DNSPython Library</h3><p style="font-size:12px">DNS record enumeration — A, MX, TXT, SPF, DMARC — for email security &amp; domain intelligence</p></div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">🔒</div>
+          <div><h3 style="font-size:.9rem">Python Cryptography</h3><p style="font-size:12px">PBKDF2HMAC key derivation + AES-256-GCM encryption for secure API credential storage</p></div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">⚡</div>
+          <div><h3 style="font-size:.9rem">FastAPI + Uvicorn</h3><p style="font-size:12px">High-performance async REST API endpoints with rate limiting via TokenBucketRateLimiter</p></div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">🐳</div>
+          <div><h3 style="font-size:.9rem">Docker &amp; Docker Compose</h3><p style="font-size:12px">Containerised deployment for isolated, reproducible environments — local or cloud</p></div>
+        </div>
+      </div>
+      <div class="tool-section">
+        <h3 style="color:var(--accent4);margin-bottom:16px">🗄️ Database &amp; Data Stores</h3>
+        <div class="tool-item">
+          <div class="tool-icon">📦</div>
+          <div><h3 style="font-size:.9rem">Mock Business Profile DB</h3><p style="font-size:12px">Predefined profiles (e-commerce, clinic, fintech) with realistic port &amp; service configurations for testing scans</p></div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">🔐</div>
+          <div><h3 style="font-size:.9rem">.env.enc Encrypted Store</h3><p style="font-size:12px">AES-256-GCM encrypted file storage for API credentials — decrypted at runtime with PBKDF2 password key</p></div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">📋</div>
+          <div><h3 style="font-size:.9rem">CVE Knowledge Base</h3><p style="font-size:12px">Gemini's trained knowledge base of CVEs, CVSS scores, and exploit contexts used for vulnerability mapping</p></div>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">📄</div>
+          <div><h3 style="font-size:.9rem">JSON + Markdown Report Store</h3><p style="font-size:12px">Structured JSON &amp; Markdown outputs stored per scan — exportable for CI/CD pipelines, dashboards &amp; stakeholders</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: SECURITY + DEPLOYMENT -->
+  <div class="slide" id="s9">
+    <div class="slide-num">09 / 10</div>
+    <div class="tag">Security &amp; Deployment</div>
+    <h2>Built-in Security &amp; Deployment</h2>
+    <div class="sec-grid">
+      <div class="sec-card">
+        <h3 style="color:var(--accent3);margin-bottom:16px">🛡️ Security Hardening</h3>
+        <div class="sec-item"><span class="check">✔</span><div><strong>Input Validation</strong> — Strict regex checks on domain syntax, IP formats, port lists to block injection attacks</div></div>
+        <div class="sec-item"><span class="check">✔</span><div><strong>Rate Limiting</strong> — TokenBucketRateLimiter prevents API exhaustion and brute-force abuse</div></div>
+        <div class="sec-item"><span class="check">✔</span><div><strong>AES-256-GCM Encryption</strong> — API keys never stored in plaintext; protected with PBKDF2HMAC key derivation</div></div>
+        <div class="sec-item"><span class="check">✔</span><div><strong>Sandboxed Scanning</strong> — Network scanner isolated from backend logic to prevent privilege escalation</div></div>
+        <div class="sec-item"><span class="check">✔</span><div><strong>Error Containment</strong> — Each agent stage isolated; one failure does not cascade the pipeline</div></div>
+      </div>
+      <div class="sec-card">
+        <h3 style="color:var(--accent1);margin-bottom:16px">🚀 Deployment Interfaces</h3>
+        <div class="sec-item"><span class="check" style="color:var(--accent1)">🌐</span><div><strong>Web Dashboard</strong> — Glassmorphic premium UI with real-time scan results, risk scores &amp; visual metrics</div></div>
+        <div class="sec-item"><span class="check" style="color:var(--accent1)">💻</span><div><strong>CLI Tool</strong> — backend/cli.py for terminal-first workflows; supports --profile and --output flags</div></div>
+        <div class="sec-item"><span class="check" style="color:var(--accent1)">🔌</span><div><strong>MCP Server</strong> — Expose scans to Claude Desktop, Gemini IDEs, and any MCP-compatible agent workflow</div></div>
+        <div class="sec-item"><span class="check" style="color:var(--accent1)">🐳</span><div><strong>Docker Deployment</strong> — docker-compose up --build; runs offline at localhost:8000 in minutes</div></div>
+        <div class="sec-item"><span class="check" style="color:var(--accent1)">☁️</span><div><strong>Vercel Cloud Deploy</strong> — Live at sentinel-ai-kappa-teal.vercel.app — try without any local setup</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: OUTRO -->
+  <div class="slide" id="s10">
+    <div class="slide-num">10 / 10</div>
+    <div class="logo-ring" style="width:80px;height:80px;font-size:32px">🛡️</div>
+    <div class="tag">Summary</div>
+    <h1 class="gradient-text">SentinelAI</h1>
+    <p style="max-width:600px;text-align:center;font-size:1rem;margin-top:8px">Autonomous. Intelligent. Proactive.<br/>Your AI-powered security command centre — from recon to executive report in minutes.</p>
+    <div class="outro-grid">
+      <div class="outro-card"><div class="outro-val gradient-text">4</div><div style="font-size:13px;color:var(--muted);margin-top:4px">Autonomous AI Agents</div></div>
+      <div class="outro-card"><div class="outro-val gradient-text">3</div><div style="font-size:13px;color:var(--muted);margin-top:4px">Access Interfaces</div></div>
+      <div class="outro-card"><div class="outro-val gradient-text">AES‑256</div><div style="font-size:13px;color:var(--muted);margin-top:4px">Credential Security</div></div>
+      <div class="outro-card"><div class="outro-val gradient-text">∞</div><div style="font-size:13px;color:var(--muted);margin-top:4px">Scalable Scanning</div></div>
+    </div>
+    <a href="https://sentinel-ai-kappa-teal.vercel.app/" target="_blank" class="cta-btn">🚀 Launch SentinelAI</a>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div id="nav">
+  <button onclick="go(-1)">&#8592;</button>
+  <div id="progress-dots"></div>
+  <button onclick="go(1)">&#8594;</button>
+</div>
+<div id="hint">← → ARROW KEYS TO NAVIGATE</div>
+
+<script>
+  const starContainer = document.getElementById('stars');
+  for (let i = 0; i < 160; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.4 + .4;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*5}s;animation-duration:${3+Math.random()*4}s;`;
+    starContainer.appendChild(s);
+  }
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('progress-dots');
+  let cur = 0;
+  slides.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' active':'');
+    d.onclick = () => jump(i);
+    dotsContainer.appendChild(d);
+  });
+  function go(dir) { jump(cur+dir); }
+  function jump(target) {
+    if (target < 0 || target >= slides.length) return;
+    slides[cur].classList.remove('active');
+    slides[target].classList.add('active');
+    document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===target));
+    cur = target;
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+    if (e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+  });
+</script>
+</body>
+</html>
