@@ -1,6 +1,6 @@
 # SentinelAI - Enterprise Multi-Agent Threat Intelligence & Security Scanner
 
-[![Online Deployment](https://img.shields.io/badge/Online-Deployed-success?style=for-the-badge&logo=vercel)](https://sentinel-ai-kappa-teal.vercel.app/)
+[![Online Deployment](https://img.shields.io/badge/Online-Deployed-success?style=for-the-badge&logo=vercel)](https://sentinel-ai-virid.vercel.app/)
 
 SentinelAI is an advanced, modular, multi-agent cybersecurity scanning and analysis assistant. Leveraging a custom **Agent Development Kit (ADK)**, SentinelAI sequences autonomous AI agents to perform host reconnaissance, match exposures to known CVEs, assess business threat risks, and compile professional executive reports.
 
@@ -12,7 +12,7 @@ SentinelAI is built for adaptability, offering a premium Glassmorphic Web UI, a 
 
 Want to try SentinelAI immediately without any local setup? Use our hosted online version:
 
-🔗 **[SentinelAI Web Dashboard](https://sentinel-ai-kappa-teal.vercel.app/)**
+🔗 **[SentinelAI Web Dashboard](https://sentinel-ai-virid.vercel.app/)**
 
 ---
 
